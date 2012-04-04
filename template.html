@@ -301,8 +301,10 @@ function submitTask() {
     urbanPark = JSON.parse(geojson.write(urbanParkLayer.features[0]));
     //console.log(urbanPark.geometry.type);
     pybossa.saveTask( task_id, {'city': city, 'urbanpark': urbanPark}).done( function(data) {
-        console.log(data); 
-        console.log("Task saved!");
+        // Show the feedback div
+        $("#success").fadeIn(); 
+        // Fade out the pop-up after a 1000 miliseconds
+        setTimeout(function() { $("#success").fadeOut() }, 1000);
         // Request a new task
         pybossa.newTask('urbanpark').done( function(data) { loadData(data) });
     });
