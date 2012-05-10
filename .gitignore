@@ -9,3 +9,4 @@ env/
 epio.ini
 .epio-app
 .epioignore
+*.un~
