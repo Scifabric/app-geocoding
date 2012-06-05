@@ -52,7 +52,7 @@
     <div id="question">
       <h1>Question</h1>
       <h3 id="city">City</h3>
-      <p>Add a new marker (top right corner) to <i class="icon-map-marker"></i> to set the urban park position.</p> 
+      <p>Use the black toolbar (below the map) to add  a new marker to <i class="icon-map-marker"></i> to set the urban park position.</p> 
       <p>Task: <span id="task-id" class="label label-warning">#</span></p>
       <div id="map_canvas" style="width: 620px; height: 310px;">
           <div id="throbber"></div>
@@ -60,6 +60,15 @@
       <div id="coordinates">
           <i class="icon-map-marker"></i> Urban park position: <strong> Longitude:</strong> <span id="lon"></span>, 
           <strong>Latitude:</strong> <span id="lat"></span>
+      </div>
+      <br/>
+      <div id="controls" class="btn-group" data-toggle="buttons-radio" style="text-align:center">
+          <button id="navigate" class="btn btn-inverse active" onClick="toggleControl('navigate');">
+              <i class="icon icon-white icon-move"></i> Navigate
+          </button>
+          <button id="point"    class="btn btn-inverse" onClick="toggleControl('point');">
+              <i class="icon icon-white icon-map-marker"></i> Point
+          </button>
       </div>
       <br/>
     </div>
@@ -86,8 +95,8 @@ var point;
 var urbanParkLayer;
 // Layer for placing the city. This layer is static and does not allow drag & drop, is just a reference.
 var cityLayer;
-// OpenLayers toolbar: adds the button to place the urban park marker
-var toolbar;
+// Draw Controls
+var drawControls = {};
 // Spinner to give feedback to the user when the map is getting loaded or something is taking place in the background
 var spinner = new Throbber({ 
     color: 'black',
@@ -112,7 +121,16 @@ function spinnerStop() {
 // This function creates the map, the layers, and sets up the map
 function initialize() {
 
-    map = new OpenLayers.Map('map_canvas');
+    map = new OpenLayers.Map('map_canvas', {
+        controls: [
+            new OpenLayers.Control.Navigation(),
+            new OpenLayers.Control.PanZoom(),
+            new OpenLayers.Control.LayerSwitcher(),
+            new OpenLayers.Control.MousePosition({displayProjection: new OpenLayers.Projection("EPSG:4326")}),
+            new OpenLayers.Control.ScaleLine(),
+            new OpenLayers.Control.Attribution()
+            ]
+    });
 
     // Layers
     // Open Street Map (default layer)
@@ -168,30 +186,8 @@ function initialize() {
         );
         $("#lon").text(tmp.x);       
         $("#lat").text(tmp.y);       
-        toolbar.deactivate();
+        toggleControl('point');
     }
-
-    // Controls: Layer switcher and Mouse Position
-    map.addControl(new OpenLayers.Control.LayerSwitcher());
-    map.addControl(new OpenLayers.Control.MousePosition({displayProjection: new OpenLayers.Projection("EPSG:4326")}));
-    // This panel adds the control to add points into the map. The event featureAdded will trigger the disablePoint
-    // function, that will disable the toolbar, so only one urban park marker can be added per city and per volunteer
-    var panelControls = [
-        new OpenLayers.Control.DrawFeature(urbanParkLayer,
-            OpenLayers.Handler.Point,
-            { 'displayClass': 'olControlDrawFeaturePoint',
-              'featureAdded': disablePoint 
-            })
-    ];
-
-    // Load the Editing Toolbar but only with the points tool
-    toolbar = new OpenLayers.Control.Panel({
-        displayClass: 'olControlEditingToolbar'
-    });
-
-    // Add all the previous controls to the map
-    toolbar.addControls(panelControls);
-    map.addControl(toolbar);
 
     // Default location to load the map
     var lonLat = new OpenLayers.LonLat(-0.1279688 ,51.5077286 )
@@ -219,6 +215,32 @@ function initialize() {
     map.addControl(drag);
     // Activate drag & drop
     drag.activate();
+
+    drawControls = {
+        point:      new OpenLayers.Control.DrawFeature(urbanParkLayer, OpenLayers.Handler.Point, 
+                    { 'featureAdded': disablePoint})
+    }
+
+    // Add them to the map
+    for (var key in drawControls) {
+        map.addControl(drawControls[key]);
+    }
+
+}
+
+// Function to enable/disable the drawing controls. Only one can be active at a time
+function toggleControl(control) {
+    for (key in drawControls) {
+        ctrl = drawControls[key];
+        if ( (control == key) && (!ctrl.active) ) {
+            ctrl.activate();
+        }
+        else {
+            ctrl.deactivate();
+            $("#navigate").addClass("active");
+            $("#point").addClass("disabled");
+        }
+    }
 }
 
 // Initialize the map
@@ -235,8 +257,6 @@ function addCity(city) {
             // Clean previous markers
             urbanParkLayer.removeAllFeatures();
             cityLayer.removeAllFeatures();
-            // Activate the toolbar
-            toolbar.activate();
             //console.log("Map cleaned!");
             // Create a LonLat object to load the city marker
             var lonLat = new OpenLayers.LonLat(output[0].lon, output[0].lat)
