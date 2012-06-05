@@ -20,3 +20,7 @@ Testing the application:
 Please, check the full documentation here:
 
 http://app-geocoding.rtfd.org
+
+The thumbnail has been created using a photo from William Murphy (license CC¬
+  1 BY-SA 2.0). ¬
+  0 Check the original photo here: http://www.flickr.com/photos/infomatique/5489548540/
