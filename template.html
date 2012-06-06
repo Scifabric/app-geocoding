@@ -25,7 +25,7 @@
 <div class="row">
   <!-- Success and Error Messages for the user --> 
   <!-- Question, task id, photo and action buttons for answering the question-->
-  <div class="span11 offset1">
+  <div class="span11 offset1" style="height:50px;">
     <div id="success" class="alert alert-success" style="display:none;">
       <a class="close">×</a>
       <strong>Well done!</strong> Your answer has been saved</strong>
@@ -327,8 +327,8 @@ function submitTask() {
     pybossa.saveTask( task_id, {'city': city, 'urbanpark': urbanPark}).done( function(data) {
         // Show the feedback div
         $("#success").fadeIn(); 
-        // Fade out the pop-up after a 1000 miliseconds
-        setTimeout(function() { $("#success").fadeOut() }, 1000);
+        // Fade out the pop-up after a 2000 miliseconds
+        setTimeout(function() { $("#success").fadeOut() }, 2000);
         // Request a new task
         pybossa.newTask('urbanpark').done( function(data) { loadData(data) });
     });
