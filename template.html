@@ -62,7 +62,7 @@
           <strong>Latitude:</strong> <span id="lat"></span>
       </div>
       <br/>
-      <div id="controls" class="btn-group" data-toggle="buttons-radio" style="text-align:center">
+      <div id="controls" class="btn-group" data-toggle="buttons-checkbox" style="text-align:center">
           <button id="navigate" class="btn btn-inverse active" onClick="toggleControl('navigate');">
               <i class="icon icon-white icon-move"></i> Navigate
           </button>
@@ -232,13 +232,15 @@ function initialize() {
 function toggleControl(control) {
     for (key in drawControls) {
         ctrl = drawControls[key];
-        if ( (control == key) && (!ctrl.active) ) {
-            ctrl.activate();
-        }
-        else {
-            ctrl.deactivate();
-            $("#navigate").addClass("active");
-            $("#point").addClass("disabled");
+        if (!$("#point").hasClass("disabled")) {
+            if ( (control == key) && (!ctrl.active) ) {
+                ctrl.activate();
+            }
+            else {
+                ctrl.deactivate();
+                $("#navigate").addClass("active");
+                $("#point").addClass("disabled");
+            }
         }
     }
 }
@@ -255,6 +257,9 @@ function addCity(city) {
         if (output.length >= 1) {
             //console.log("Lon: "+ output[0].lon + " Lat: " + output[0].lat);
             // Clean previous markers
+            $("#navigate").addClass("active");
+            $("#point").removeClass("disabled");
+            $("#point").removeClass("active");
             urbanParkLayer.removeAllFeatures();
             cityLayer.removeAllFeatures();
             //console.log("Map cleaned!");
