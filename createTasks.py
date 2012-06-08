@@ -78,7 +78,7 @@ def create_app(api_url , api_key, name=None, short_name=None, description=None, 
     file = open(template)
     text = file.read()
     file.close()
-    info = dict (thumbnail = "http://dl.dropbox.com/u/27667029/urbanparks-thumbnail.png", task_presenter = text)
+    info = dict (thumbnail = "http://img41.imageshack.us/img41/6581/urbanparksthumbnail.png", task_presenter = text)
     data = dict(name = name, short_name = short_name, description = description,
                hidden = 0, info = info)
     data = json.dumps(data)
