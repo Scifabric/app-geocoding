@@ -45,6 +45,7 @@ the *createTasks.py* script. The script will require a URL and an **API-KEY** to
 authenticate you in the PyBossa server. The following section gives more
 details about how to use the script.
 
+
 Creating the Tasks and Application
 ==================================
 
@@ -84,6 +85,31 @@ Here is a list of all the Python methods that use the PyBossa API:
 
 .. automodule:: createTasks 
    :members: create_app, update_app, delete_app
+
+Providing more details about the application
+============================================
+
+If you check the source code, you will see that there is a file named
+*long_description.html*. This file has a long description of the application,
+explaining different aspects of it.
+
+This information is not mandatory, however it will be very useful for the users
+as they will get a bit more of information about the application goals.
+
+The file can be composed using HTML or plain text. As PyBossa is using `Twitter
+Bootstrap <http://twitter.github.com/bootstrap/>`_ you can use all the available 
+CSS properties that this framework provides.
+
+The long description is shown in the application home page::
+
+ http://pybossa.com/app/urbanpark
+
+If you want to modify the description you have two options:
+
+ * Edit it via the web interface, or
+ * modify locally the *long_description.html* file and run the command again
+   with the **-u** option to update it.
+
 
 Presenting the Tasks to the user
 ================================
@@ -135,7 +161,37 @@ The header and footer will be provided by PyBossa, so the template only has to
 define the structure to load the data from the tasks and the action buttons to
 retrieve and save the answer from the volunteers.
 
-2. Loading the Task data
+2. Adding an icon to the application
+------------------------------------
+
+It is possible also to add a nice icon for the application. By default PyBossa
+will render a 100x100 pixels empty thumbnail for those applications that do not
+provide it. If you want to add an icon you only have to upload the thumbnail of
+size 100x100 pixels to a hosting service like Flickr, ImageShack, etc. and use
+the URL image link to include it in the **info** field (check createTask.py
+script as it has an example)::
+
+  info = { 'thumbnail': http://hosting-service/thumbnail-name.png,
+           'task_presenter': template.html file
+         }
+
+3. Updating the template for all the tasks
+------------------------------------------
+
+
+It is possible to update the template of the application without
+having to re-create the application and its tasks. In order to update the
+template, you only have to modify the file template.html and run the following
+command::
+
+  python createTasks.py -u http://PYBOSSA-SERVER -k API-KEY -t
+
+This is the used method to update the template:
+
+.. automodule:: createTasks 
+   :members: update_template
+
+4. Loading the Task data
 ------------------------
 
 All the action takes place in the file_ **template.html** script section, after the pybossa.js library.

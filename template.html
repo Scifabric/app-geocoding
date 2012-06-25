@@ -48,7 +48,7 @@
     </div>
   </div>
 
-  <div class="span11 offset1">
+  <div class="skeleton span11 offset1">
     <div id="question">
       <h1>Question</h1>
       <h3 id="city">City</h3>
@@ -151,13 +151,13 @@ function initialize() {
     // Icon for the City Marker
     var styleMapCity = new OpenLayers.StyleMap({
         pointRadius: 15,
-        externalGraphic: 'http://dl.dropbox.com/u/27667029/mapicons/you-are-here-2.png'
+        externalGraphic: 'http://img225.imageshack.us/img225/5237/youarehere2.png'
     });
 
     // Icon for the Urban Park Marker 
     var styleMapUrbanPark = new OpenLayers.StyleMap({
         pointRadius: 15,
-        externalGraphic: 'http://dl.dropbox.com/u/27667029/mapicons/urbanpark.png'
+        externalGraphic: 'http://img594.imageshack.us/img594/1087/urbanpark.png'
     });
 
     // Layer for placing the city marker
@@ -298,13 +298,19 @@ function addCity(city) {
 
 // Load the task data into the HTML skeleton
 function loadData (data) {
-    spinnerStart();
-    $("#question h1").text(data.question);
-    $("#question h3").text(data.task.info.city);
-    $("#task-id").text(data.task.id);
-    spinnerStop();
+    if ( !$.isEmptyObject(data.task) ) {
+        spinnerStart();
+        $("#question h1").text(data.question);
+        $("#question h3").text(data.task.info.city);
+        $("#task-id").text(data.task.id);
+        spinnerStop();
 
-    addCity(data.task.info.city);
+        addCity(data.task.info.city);
+    }
+    else {
+        $(".skeleton").hide();
+        $("#finish").fadeIn();
+    }
 }
 
 // Uses the new API method to get a proper task to be shown!
