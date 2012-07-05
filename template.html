@@ -67,14 +67,14 @@
               <i class="icon icon-white icon-move"></i> Navigate
           </button>
           <button id="point"    class="btn btn-inverse" onClick="toggleControl('point');">
-              <i class="icon icon-white icon-map-marker"></i> Point
+              <i class="icon icon-white icon-map-marker"></i> Marker
           </button>
       </div>
       <br/>
     </div>
     <div id="answer">
-        <button class="btn btn-success" onclick="submitTask()"><i class="icon-check icon-white"></i> Save these coordinates for the urban park</button>
-        <button class="btn" onclick="pybossa.newTask('urbanpark').done(function(data) {loadData(data)})">Try another city</button>
+        <button id="answerbtn" class="btn btn-success"><i class="icon-check icon-white"></i> Save these coordinates for the urban park</button>
+        <button class="btn" onclick="submitTask()">I do not see an urban park</button>
     </div>
 
   </div>
@@ -87,7 +87,7 @@
 <script>
 // Map for loading the markers and placing them
 var map = null;
-// Variable to geocode the points of interest: cities and urban parks
+// Variable to geocode the points of interest: 
 var geocoder;
 // OpenLayers point variable to save the lon & lat
 var point;
@@ -111,6 +111,8 @@ function spinnerStart() {
     $("#throbber").show();
     spinner.start();
 }
+
+spinnerStart();
 
 // This function stops the spinner and hides the spinner div
 function spinnerStop() {
@@ -178,6 +180,11 @@ function initialize() {
     // The function gets the feature (point) and gets its location, transforms it to the right projection
     // loads the lon and at into the HTML skeleton and disables the toolbar, so no more points can be added
     disablePoint = function(feature) { 
+        if ($("#answerbtn").hasClass("disabled")) {
+            $("#answerbtn").removeClass('disabled');
+            $("#answerbtn").click(submitTask);
+        }
+
         $("#lat").text(feature.geometry.y);
         var tmp = feature.geometry.clone();
         tmp.transform(
@@ -262,6 +269,8 @@ function addCity(city) {
             $("#point").removeClass("active");
             urbanParkLayer.removeAllFeatures();
             cityLayer.removeAllFeatures();
+            $("#answerbtn").addClass("disabled");
+            $("#answerbtn").unbind('click',submitTask);
             //console.log("Map cleaned!");
             // Create a LonLat object to load the city marker
             var lonLat = new OpenLayers.LonLat(output[0].lon, output[0].lat)
@@ -291,7 +300,8 @@ function addCity(city) {
             setTimeout(function() {
                 $("#warning").fadeOut();
                 }, 2000);
-                pybossa.newTask('urbanpark').done(function(data) {loadData(data)});
+                submitTask();
+                //pybossa.newTask('urbanpark').done(function(data) {loadData(data)});
         }
     });
 }
@@ -333,7 +343,13 @@ function submitTask() {
         'internalProjection': map.baseLayer.projection,
         'externalProjection': new OpenLayers.Projection("EPSG:4326")
         });
-    urbanPark = JSON.parse(geojson.write(urbanParkLayer.features[0]));
+    
+    if (urbanParkLayer.features.length > 0) {
+        urbanPark = JSON.parse(geojson.write(urbanParkLayer.features[0]));
+        }
+    else {
+        urbanPark = "NoPark"
+        }
     //console.log(urbanPark.geometry.type);
     pybossa.saveTask( task_id, {'city': city, 'urbanpark': urbanPark}).done( function(data) {
         // Show the feedback div
