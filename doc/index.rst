@@ -49,6 +49,7 @@ Useful Links
    :maxdepth: 2
 
    geocoding
+   advance
 
 Indices and tables
 ==================

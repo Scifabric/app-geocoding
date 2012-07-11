@@ -106,6 +106,48 @@ def update_template(api_url, api_key, app='urbanpark'):
     else:
         return False
 
+def update_tasks(api_url, api_key, app='urbanpark'):
+    """
+    Update tasks question 
+
+    :arg string app: Application short_name in PyBossa.
+    :returns: True when the template has been updated.
+    :rtype: boolean
+    """
+    request = urllib2.Request('%s/api/app?short_name=%s' %
+                              (api_url, app))
+    request.add_header('Content-type', 'application/json')
+
+    res = urllib2.urlopen(request).read()
+    res = json.loads(res)
+    app = res[0]
+    if app.get('short_name'):
+        request = urllib2.Request('%s/api/task?app_id=%s&limit=%s' %
+                                  (api_url, app['id'],'1000'))
+        request.add_header('Content-type', 'application/json')
+
+        res = urllib2.urlopen(request).read()
+        tasks = json.loads(res)
+
+        for t in tasks:
+            t['info']['question']=u'Find one urban park for this city'
+            data = dict(info=t['info'],app_id=t['app_id'])
+            data = json.dumps(data)
+            request = urllib2.Request(api_url + '/api/task/' + str(t['id']) + \
+                                      '?api_key=' + api_key)
+            request.add_data(data)
+            request.add_header('Content-type', 'application/json')
+            request.get_method = lambda: 'PUT'
+
+            if (urllib2.urlopen(request).getcode() != 200):
+                return False
+            else:
+                print "TASK %s updated" % (t['id'])
+
+    else:
+        return False
+
+
 
 def create_app(api_url, api_key, name=None,
                short_name=None, description=None,
@@ -175,7 +217,7 @@ def create_task(api_url, api_key, app_id, n_answers, city):
     :rtype: integer
     """
     # Data for the tasks
-    info = dict(city=city.rstrip())
+    info = dict(question=u'Find one urban park for this city',city=city.rstrip())
     data = dict(app_id=app_id, state=0, info=info,
                  calibration=0, priority_0=0)
     data = json.dumps(data)
@@ -236,6 +278,13 @@ if __name__ == "__main__":
                       help="Update Tasks template",
                       metavar="UPDATE-TEMPLATE"
                      )
+    # Update tasks question
+    parser.add_option("-q", "--update-tasks", action="store_true",
+                      dest="update_tasks",
+                      help="Update Tasks question",
+                      metavar="UPDATE-TASKS"
+                     )
+
     # Modify the number of TaskRuns per Task
     # (default 30)
     parser.add_option("-n", "--number-answers",
@@ -287,6 +336,11 @@ if __name__ == "__main__":
     if options.update_template:
         print "Updating app template"
         update_template(options.api_url, options.api_key)
+
+    if options.update_tasks:
+        print "Updating task question"
+        update_tasks(options.api_url, options.api_key)
+
 
     if not options.create_app and not options.update_template:
         parser.error("Please check --help or -h for the available options")
