@@ -14,7 +14,7 @@ Testing the application:
 
 *  Create an account in PyBossa
 *  Copy under your account your API-KEY
-*  Run python createTasks.py -u http://pybossa.com -k API-KEY
+*  Run python createTasks.py -u http://crowdcrafting.org -k API-KEY
 *  Open with your browser the Applications section and choose the Urban Parks application. This will open the presenter for this demo application.
 
 Please, check the full documentation here:
