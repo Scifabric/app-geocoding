@@ -1,0 +1,51 @@
+<div class="row">
+    <div class="span12">
+        <div id="modal" class="modal hide fade">
+            <div class="modal-header">
+                <h3>Urban Parks tutorial</h3>
+            </div>
+            <div id="0" class="modal-body" style="display:none">
+                <p><strong>Hi!</strong> This is a <strong>demo application</strong> that shows how you can do geo-coding problems with web mapping tools using the PyBossa framework in Crowdcrafting.org.
+               </p> 
+            </div>
+            <div id="1" class="modal-body" style="display:none">
+                <p>The application is really simple. It loads a city from the world into the web map, centers the map and the goal is to browse the map and find one urban park.</p>
+                <p>The web map provides different layers so you can change between them in order to get some help from satellite images.
+                </p>
+                <p>When you find an Urban Park, click in the black button: <strong>Urban Park Marker</strong> and place it in the middle of the park. Then click submit and you will have completed one task.</p>
+            </div>
+            <div class="modal-footer">
+                <a id="prevBtn" href="#" onclick="showStep('prev')" class="btn">Previous</a>
+                <a id="nextBtn" href="#" onclick="showStep('next')" class="btn btn-success">Next</a>
+                <a id="startContrib" href="../urbanpark/newtask" class="btn btn-primary" style="display:none"><i class="icon-thumbs-up"></i> Try the demo!</a>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    var step = -1;
+    function showStep(action) {
+        $("#" + step).hide();
+        if (action == 'next') {
+            step = step + 1;
+        }
+        if (action == 'prev') {
+            step = step - 1;
+        }
+        if (step == 0) {
+            $("#prevBtn").hide();
+        }
+        else {
+            $("#prevBtn").show();
+        }
+
+        if (step == 1 ) {
+            $("#nextBtn").hide();
+            $("#startContrib").show();
+        }
+        $("#" + step).show();
+    }
+
+    showStep('next');
+    $("#modal").modal('show');
+</script>
