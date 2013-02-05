@@ -507,11 +507,10 @@
                   window.data = data;
                   var d = [];
                   //console.log(data[0]);
-                  if ('coordinates' in data[0]['info']['urbanpark']['geometry'])
-                      console.log("True");
+                  //if ('coordinates' in data[0]['info']['urbanpark']['geometry'])
                   for (i=0;i<data.length;i++) {
-                      //console.log(data[i]);
-                      if (data[i]['info']['urbanpark']!='NoPark')
+                      console.log(data[i]['info']['urbanpark']);
+                      if (typeof data[i]['info']['urbanpark'] !== 'string')
                       {
                       d.push(data[i]['info']['urbanpark']['geometry']['coordinates'][1],
                              data[i]['info']['urbanpark']['geometry']['coordinates'][0],
