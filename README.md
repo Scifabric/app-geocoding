@@ -10,6 +10,8 @@ urban park.
 Thanks to the use of OpenLayers the data can be exported in any standard GIS format:
 KML, GeoJSON, etc. In this application the answers are saved as GeoJSON.
 
+![alt screenshot](http://i.imgur.com/XMVyNKV.png)
+
 The application has three files:
 
 *  createTasks.py: for creating the application in PyBossa
