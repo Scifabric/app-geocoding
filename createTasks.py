@@ -134,49 +134,87 @@ if __name__ == "__main__":
         print('Using API-KEY: %s' % options.api_key)
 
     if options.create_app:
-        pbclient.create_app(app_config['name'],
-                            app_config['short_name'],
-                            app_config['description'])
-        app = pbclient.find_app(short_name=app_config['short_name'])[0]
-        app.long_description = open('long_description.html').read()
-        app.info['task_presenter'] = open('template.html').read()
-        app.info['thumbnail'] = app_config['thumbnail']
-        app.info['tutorial'] = open('tutorial.html').read()
+        try:
+            response = pbclient.create_app(app_config['name'],
+                                           app_config['short_name'],
+                                           app_config['description'])
+            check_api_error(response)
+            response = pbclient.find_app(short_name=app_config['short_name'])
+            check_api_error(response)
+            app = response[0]
+            app.long_description = open('long_description.html').read()
+            app.info['task_presenter'] = open('template.html').read()
+            app.info['thumbnail'] = app_config['thumbnail']
+            app.info['tutorial'] = open('tutorial.html').read()
+        except:
+            format_error("pbclient.create_app or pbclient.find_app", response)
 
-        pbclient.update_app(app)
+        try:
+            response = pbclient.update_app(app)
+            check_api_error(response)
+        except:
+            format_error("pbclient.update_app", response)
 
         cities = get_cities(options.cities)
         for city in cities:
                 task_info = dict(question=app_config['question'],
                                  n_answers=int(options.n_answers),
                                  city=city.rstrip())
-                pbclient.create_task(app.id, task_info)
+                try:
+                    response = pbclient.create_task(app.id, task_info)
+                    check_api_error(response)
+                except:
+                    format_error("pbclient.create_task", response)
 
     if options.update_template:
         print "Updating app template"
-        app = pbclient.find_app(short_name=app_config['short_name'])[0]
-        app.long_description = open('long_description.html').read()
-        app.info['task_presenter'] = open('template.html').read()
-        app.info['tutorial'] = open('tutorial.html').read()
-        pbclient.update_app(app)
+        try:
+            response = pbclient.find_app(short_name=app_config['short_name'])
+            check_api_error(response)
+            app = response[0]
+            app.long_description = open('long_description.html').read()
+            app.info['task_presenter'] = open('template.html').read()
+            app.info['tutorial'] = open('tutorial.html').read()
+            response = pbclient.update_app(app)
+            check_api_error(response)
+        except:
+            format_error("pbclient.find_app or pbclient.update_app", response)
 
     if options.update_tasks:
         print "Updating task question"
-        app = pbclient.find_app(short_name=app_config['short_name'])[0]
-        n_tasks = 0
-        offset = 0
-        limit = 100
-        tasks = pbclient.get_tasks(app.id, offset=offset, limit=limit)
+        try:
+            response = pbclient.find_app(short_name=app_config['short_name'])
+            check_api_error(response)
+            app = response[0]
+            n_tasks = 0
+            offset = 0
+            limit = 100
+        except:
+            format_error("pbclient.find_app", response)
+
+        try:
+            tasks = pbclient.get_tasks(app.id, offset=offset, limit=limit)
+            check_api_error(tasks)
+        except:
+            format_error("pbclient.get_tasks", tasks)
         while tasks:
             for task in tasks:
                 print "Updating task: %s" % task.id
                 if ('n_answers' in task.info.keys()):
                     del(task.info['n_answers'])
                 task.n_answers = int(options.update_tasks)
-                pbclient.update_task(task)
-                n_tasks += 1
+                try:
+                    response = pbclient.update_task(task)
+                    check_api_error(response)
+                    n_tasks += 1
+                except:
+                    format_error("pbclient.update_task", response)
             offset = (offset + limit)
-            tasks = pbclient.get_tasks(app.id, offset=offset, limit=limit)
+            try:
+                tasks = pbclient.get_tasks(app.id, offset=offset, limit=limit)
+                check_api_error(tasks)
+            except:
+                format_error("pbclient.get_tasks", tasks)
         print "%s Tasks have been updated!" % n_tasks
 
     if not options.create_app and not options.update_template:

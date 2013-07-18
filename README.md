@@ -20,6 +20,11 @@ The application has three files:
 
 Testing the application:
 =======================
+You need to install the pybossa-client and the soundcloud client (use a virtualenv):
+
+```bash
+    $ pip install -r requirements.txt
+```
 
 *  Create an account in PyBossa
 *  Copy under your account your API-KEY
