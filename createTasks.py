@@ -17,8 +17,28 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import json
+import logging
 from optparse import OptionParser
+from requests import exceptions
 import pbclient
+
+
+def check_api_error(api_response):
+    """Check if returned API response contains an error"""
+    if type(api_response) == dict and (api_response.get('status') == 'failed'):
+        raise exceptions.HTTPError
+
+
+def format_error(module, error):
+    """Format the error for the given module"""
+    logging.error(module)
+    # Beautify JSON error
+    if type(error) == list:
+        print "Application not found"
+    else:
+        print json.dumps(error, sort_keys=True, indent=4, separators=(',', ': '))
+    exit(1)
+
 
 def get_cities(file):
     """
@@ -58,22 +78,20 @@ if __name__ == "__main__":
     parser.add_option("-u", "--update-template", action="store_true",
                       dest="update_template",
                       help="Update Tasks template",
-                      metavar="UPDATE-TEMPLATE"
-                     )
+                      metavar="UPDATE-TEMPLATE")
+
     # Update tasks question
     parser.add_option("-q", "--update-tasks",
                       dest="update_tasks",
                       help="Update Tasks n_answers",
-                      metavar="UPDATE-TASKS"
-                     )
+                      metavar="UPDATE-TASKS")
 
     # Modify the number of TaskRuns per Task
     # (default 30)
     parser.add_option("-n", "--number-answers",
                       dest="n_answers",
                       help="Number of answers per task",
-                      metavar="N-ANSWERS"
-                     )
+                      metavar="N-ANSWERS")
     # File with list of cities
     parser.add_option("-c", "--cities", dest="cities",
                       help="File with the name of the cities",
@@ -98,7 +116,7 @@ if __name__ == "__main__":
     pbclient.set('endpoint', options.api_url)
 
     if not options.api_key:
-        parser.error("You must supply an API-KEY to create " +\
+        parser.error("You must supply an API-KEY to create " +
                      "an application and tasks in PyBossa")
     pbclient.set('api_key', options.api_key)
 
@@ -117,8 +135,8 @@ if __name__ == "__main__":
 
     if options.create_app:
         pbclient.create_app(app_config['name'],
-                app_config['short_name'],
-                app_config['description'])
+                            app_config['short_name'],
+                            app_config['description'])
         app = pbclient.find_app(short_name=app_config['short_name'])[0]
         app.long_description = open('long_description.html').read()
         app.info['task_presenter'] = open('template.html').read()
@@ -130,8 +148,8 @@ if __name__ == "__main__":
         cities = get_cities(options.cities)
         for city in cities:
                 task_info = dict(question=app_config['question'],
-                            n_answers=int(options.n_answers),
-                            city=city.rstrip())
+                                 n_answers=int(options.n_answers),
+                                 city=city.rstrip())
                 pbclient.create_task(app.id, task_info)
 
     if options.update_template:
@@ -148,7 +166,7 @@ if __name__ == "__main__":
         n_tasks = 0
         offset = 0
         limit = 100
-        tasks = pbclient.get_tasks(app.id,offset=offset,limit=limit)
+        tasks = pbclient.get_tasks(app.id, offset=offset, limit=limit)
         while tasks:
             for task in tasks:
                 print "Updating task: %s" % task.id
@@ -158,7 +176,7 @@ if __name__ == "__main__":
                 pbclient.update_task(task)
                 n_tasks += 1
             offset = (offset + limit)
-            tasks = pbclient.get_tasks(app.id,offset=offset,limit=limit)
+            tasks = pbclient.get_tasks(app.id, offset=offset, limit=limit)
         print "%s Tasks have been updated!" % n_tasks
 
     if not options.create_app and not options.update_template:
