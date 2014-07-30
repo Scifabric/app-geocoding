@@ -307,7 +307,7 @@ pybossa.presentTask(function(task, deferred){
 
         $(".btn-submit").off('click').on('click', function(evt){
             // Convert the feature location, the urban park marker position, into the GeoJSON format
-            var btnClicked = $(evt.target).attr("id");
+            var btnClicked = $(evt.target).attr("id") || $(evt.target).parent().attr("id");
             var geojson = new OpenLayers.Format.GeoJSON({
                 'internalProjection': task.map.baseLayer.projection,
                 'externalProjection': new OpenLayers.Projection("EPSG:4326")
