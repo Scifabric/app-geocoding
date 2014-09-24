@@ -14,7 +14,7 @@
 </style>
 <div class="row">
     <!-- Success and Error Messages for the user --> 
-    <div class="col-md-12" style="height:50px">
+    <div class="span8 offset2" style="height:50px">
         <!-- Success alert box -->
         <div id="success" class="alert alert-success" style="display:none;">
             <a class="close">×</a><strong>Well done!</strong> Your answer has been saved
@@ -33,11 +33,11 @@
             <br/>
             <div class="alert-actions">
                 <a class="btn small" href="/">Go back</a>
-                <a class="btn small" href="/app">or, Check other projects</a>
+                <a class="btn small" href="/app">or, Check other applications</a>
             </div>
         </div>
         <!-- Error alert box -->
-        <div id="error" class="alert alert-danger" style="display:none;">
+        <div id="error" class="alert alert-error" style="display:none;">
             <a class="close">×</a>
             <strong>Error!</strong> Something went wrong, please contact the site administrators
         </div>
@@ -46,36 +46,36 @@
             <a class="close">×</a>
             <p><strong>Sorry!</strong> Your web browser does not support the application.<p>
             <div class="alert-actions">
-                <a class="btn small" href="/app">Please, try with another project</a>
+<a c    lass="btn small" href="/app">Please, try with another application</a>
             </div>
         </div>
-    </div><!-- End of span8 col-md-offset-2-->
+    </div><!-- End of span8 offset2-->
 </div><!-- End of Row-->
 
 <div class="row">
-  <div class="skeleton col-md-12">
+  <div class="skeleton span11 offset1">
     <div id="question">
       <h1>Question</h1>
       <h3 id="city">City</h3>
       <button id="point" class="btn btn-inverse">
-          <i class="fa fa-map-marker"></i> Add an Urban Park Marker 
+          <i class="icon icon-white icon-map-marker"></i> Add an Urban Park Marker 
       </button>
       <button id="noPark" class="btn btn-submit">I do not see an urban park</button>
       <button id="noCity" class="btn btn-submit" style="display:none;">City not found!</button>
 
       <p>Task: <span id="task-id" class="label label-warning">#</span></p>
       <div id="map"></div>
-      <i class="fa fa-map-marker"></i> Urban park position: <strong> Longitude:</strong> <span id="lon"></span>, 
+      <i class="icon-map-marker"></i> Urban park position: <strong> Longitude:</strong> <span id="lon"></span>, 
       <strong>Latitude:</strong> <span id="lat"></span>
     </div>
     <div id="answer">
-        <button id="answerbtn" class="btn btn-success btn-submit"><i class="fa fa-check"></i> Save these coordinates for the urban park</button>
+        <button id="answerbtn" class="btn btn-success btn-submit"><i class="icon-check icon-white"></i> Save these coordinates for the urban park</button>
     </div>
   </div>
 </div>
 
 <div class="row skeleton">
-    <div id="disqus_thread" class="col-md-12"></div>
+    <div id="disqus_thread" class="span11 offset1"></div>
 </div>
 <script type="text/javascript">
     /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
