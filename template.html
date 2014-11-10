@@ -1,16 +1,16 @@
 <! -- Fix for Bootstrap css with Google Maps https://github.com/twitter/bootstrap/issues/1552 -->
 <style type="text/css">
-    .map_canvas label {
-        width: auto;
-        display: inline;
-    }
-    .map_canvas img {
-        max-width: none;
-    }
+.map_canvas label {
+    width: auto;
+    display: inline;
+}
+.olTileImage {
+    max-width: none !important;
+}
 
-    .layersDiv label {
-        color: white;
-    }
+.layersDiv label {
+    color: white;
+}
 </style>
 <div class="row">
     <!-- Success and Error Messages for the user --> 
@@ -57,14 +57,14 @@
     <div id="question">
       <h1>Question</h1>
       <h3 id="city">City</h3>
-      <button id="point" class="btn btn-inverse">
-          <i class="fa fa-map-marker"></i> Add an Urban Park Marker 
+      <button id="point" class="btn btn-default">
+          Add an Urban Park Marker 
       </button>
-      <button id="noPark" class="btn btn-submit">I do not see an urban park</button>
-      <button id="noCity" class="btn btn-submit" style="display:none;">City not found!</button>
+      <button id="noPark" class="btn btn-default btn-submit">I do not see an urban park</button>
+      <button id="noCity" class="btn btn-default btn-submit" style="display:none;">City not found!</button>
 
       <p>Task: <span id="task-id" class="label label-warning">#</span></p>
-      <div id="map"></div>
+      <div id="map" style="width:512px; height:257px;"></div>
       <i class="fa fa-map-marker"></i> Urban park position: <strong> Longitude:</strong> <span id="lon"></span>, 
       <strong>Latitude:</strong> <span id="lat"></span>
     </div>
@@ -348,4 +348,3 @@ pybossa.presentTask(function(task, deferred){
 
 pybossa.run('urbanpark');
 </script>
-
