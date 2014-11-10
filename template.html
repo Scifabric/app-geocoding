@@ -68,7 +68,7 @@
       <i class="fa fa-map-marker"></i> Urban park position: <strong> Longitude:</strong> <span id="lon"></span>, 
       <strong>Latitude:</strong> <span id="lat"></span>
     </div>
-    <div id="answer">
+    <div id="answer" style="margin-top:30px;">
         <button id="answerbtn" class="btn btn-success btn-submit"><i class="fa fa-check"></i> Save these coordinates for the urban park</button>
     </div>
   </div>
@@ -307,18 +307,22 @@ pybossa.presentTask(function(task, deferred){
 
         $(".btn-submit").off('click').on('click', function(evt){
             // Convert the feature location, the urban park marker position, into the GeoJSON format
-            var $btn = $(this);
-            var answer = $btn.attr("id");
+            var btnClicked = $(this);
+            var answer = btnClicked.attr("id");
+            console.log(answer);
+            console.log(task.urbanParkLayer.features.length);
             var geojson = new OpenLayers.Format.GeoJSON({
                 'internalProjection': task.map.baseLayer.projection,
                 'externalProjection': new OpenLayers.Projection("EPSG:4326")
                 });
 
-            if ((task.urbanParkLayer.features.length == 0) && ((btnClicked == "noPark") || (btnClicked == "noCity"))) {
+            if ((task.urbanParkLayer.features.length == 0) &&
+                ((btnClicked.attr("id") == "noPark") || (btnClicked.attr("id") == "noCity"))) {
                 urbanPark = "noPark";
                 }
             else {
-                if ((task.urbanParkLayer.features.length > 0) && (btnClicked == "answerbtn")) {
+                if ((task.urbanParkLayer.features.length > 0) &&
+                    (btnClicked.attr("id") == "answerbtn")) {
                     urbanPark = JSON.parse(geojson.write(task.urbanParkLayer.features[0]));
                     }
                 else {
