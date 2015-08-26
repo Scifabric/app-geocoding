@@ -12,11 +12,14 @@ KML, GeoJSON, etc. In this project the answers are saved as GeoJSON.
 
 ![alt screenshot](http://i.imgur.com/XMVyNKV.png)
 
-The project has three files:
+The project has five main files:
 
-*  createTasks.py: for creating the project in PyBossa
+*  project.json: a JSON file that describes the project.
+*  long_description.md: a Markdown file with a long description of the project.
+*  cities.csv: a CSV file that contains sample tasks to be used by the project.
 *  template.html: the view for every task and deal with the data of the answers.
 *  tutorial.html: a simple tutorial for the volunteers.
+
 
 Testing the project:
 ====================
